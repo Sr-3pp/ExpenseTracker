@@ -4,10 +4,9 @@ import {
   SchemaType,
   type ResponseSchema
 } from '@google/generative-ai';
-import type { ExpenseRecord } from '~~/shared/types/expense';
+import { paymentMethodOptions } from '~~/shared/constants/payment-methods';
 import type { TicketExtraction } from '~~/shared/types/ticket';
 
-import { saveExpense } from '~~/server/repositories/expenses';
 import { ticketExtractionSchema } from '~~/server/utils/expense-schema';
 
 const ticketSchema: ResponseSchema = {
@@ -56,7 +55,7 @@ const ticketSchema: ResponseSchema = {
     paymentMethod: {
       type: SchemaType.STRING,
       nullable: true,
-      description: 'Payment method such as cash, credit card, debit card, or unknown.'
+      description: `Payment method. Use one of: ${paymentMethodOptions.join(', ')}. If unclear, use other.`
     },
     items: {
       type: SchemaType.ARRAY,
@@ -161,7 +160,9 @@ Rules:
 - Use [] for missing arrays.
 - Do not guess values that are not visible.
 - Put OCR uncertainty or ambiguities into notes.
-- Normalize purchaseDate to YYYY-MM-DD only when confident.`
+- Normalize purchaseDate to YYYY-MM-DD only when confident.
+- paymentMethod must be exactly one of: ${paymentMethodOptions.join(', ')}.
+- If the payment method is present but does not clearly match one option, use other.`
       },
       {
         text: 'Read this receipt or ticket image and extract the structured expense data.'
@@ -185,9 +186,8 @@ Rules:
 
     const parsed = JSON.parse(content) as TicketExtraction;
     const validatedExpense = ticketExtractionSchema.parse(parsed);
-    const savedExpense: ExpenseRecord = await saveExpense(validatedExpense);
 
-    return savedExpense;
+    return validatedExpense;
   } catch (error) {
     if (error instanceof GoogleGenerativeAIResponseError) {
       throw createError({

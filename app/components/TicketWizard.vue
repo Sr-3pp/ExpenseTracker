@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import type { ExpenseRecord } from '~~/shared/types/expense';
+import type { TicketExtraction } from '~~/shared/types/ticket';
 
 const ticketPicture = ref<File | null>(null);
-const extractedTicket = ref<ExpenseRecord | null>(null);
+const extractedTicket = ref<TicketExtraction | null>(null);
 const errorMessage = ref('');
 const isLoading = ref(false);
-const { extractData } = useTicket();
-
-const formattedJson = computed(() =>
-  extractedTicket.value ? JSON.stringify(extractedTicket.value, null, 2) : ''
-);
+const { extractData, saveExpense } = useTicket();
 
 const submitTicket = async () => {
   if (!ticketPicture.value) {
@@ -28,6 +24,26 @@ const submitTicket = async () => {
     isLoading.value = false;
   }
 };
+
+const emit = defineEmits<{
+  saved: [];
+}>();
+
+const handleSave = async (expense: TicketExtraction) => {
+  errorMessage.value = '';
+  isLoading.value = true;
+
+  try {
+    await saveExpense(expense);
+    extractedTicket.value = null;
+    ticketPicture.value = null;
+    emit('saved');
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'Failed to save ticket data.';
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <template>
@@ -39,14 +55,14 @@ const submitTicket = async () => {
       accept="image/*"
     />
 
-    <div class="flex gap-3">
-      <UButton
+    <UButton 
+        v-if="!extractedTicket"
+        class="mx-auto"
         label="Extract JSON"
         :loading="isLoading"
         :disabled="!ticketPicture || isLoading"
         @click="submitTicket"
-      />
-    </div>
+    />
 
     <UAlert
       v-if="errorMessage"
@@ -55,12 +71,14 @@ const submitTicket = async () => {
       :title="errorMessage"
     />
 
-    <UTextarea
-      v-if="extractedTicket"
-      :model-value="formattedJson"
-      :rows="18"
-      autoresize
-      readonly
-    />
+    <template v-if="extractedTicket">
+      <ExpenseForm
+        :expense="extractedTicket"
+        :loading="isLoading"
+        submit-label="Save"
+        @submit="handleSave"
+        @cancel="extractedTicket = null"
+      />
+    </template>
   </div>
 </template>

@@ -5,6 +5,35 @@ import type { TicketExtraction } from '~~/shared/types/ticket';
 
 import { getExpensesCollection } from '~~/server/utils/mongodb';
 
+function toExpenseRecord(document: Record<string, any>): ExpenseRecord {
+  return {
+    id: document._id.toString(),
+    merchant: document.merchant ?? null,
+    purchaseDate: document.purchaseDate ?? null,
+    currency: document.currency ?? null,
+    total: document.total ?? null,
+    subtotal: document.subtotal ?? null,
+    tax: document.tax ?? null,
+    tip: document.tip ?? null,
+    invoiceNumber: document.invoiceNumber ?? null,
+    paymentMethod: document.paymentMethod ?? null,
+    items: Array.isArray(document.items) ? document.items : [],
+    notes: Array.isArray(document.notes) ? document.notes : [],
+    createdAt: document.createdAt instanceof Date ? document.createdAt.toISOString() : new Date(document.createdAt).toISOString(),
+    updatedAt: document.updatedAt instanceof Date ? document.updatedAt.toISOString() : new Date(document.updatedAt).toISOString()
+  };
+}
+
+export async function listExpenses(): Promise<ExpenseRecord[]> {
+  const collection = await getExpensesCollection();
+  const documents = await collection
+    .find({})
+    .sort({ createdAt: -1 })
+    .toArray();
+
+  return documents.map((document) => toExpenseRecord(document));
+}
+
 export async function saveExpense(expense: TicketExtraction): Promise<ExpenseRecord> {
   const now = new Date();
   const collection = await getExpensesCollection();
@@ -68,20 +97,8 @@ export async function updateExpense(id: string, expense: TicketExtraction): Prom
     return null;
   }
 
-  return {
-    id: result._id.toString(),
-    merchant: result.merchant ?? null,
-    purchaseDate: result.purchaseDate ?? null,
-    currency: result.currency ?? null,
-    total: result.total ?? null,
-    subtotal: result.subtotal ?? null,
-    tax: result.tax ?? null,
-    tip: result.tip ?? null,
-    invoiceNumber: result.invoiceNumber ?? null,
-    paymentMethod: result.paymentMethod ?? null,
-    items: Array.isArray(result.items) ? result.items : [],
-    notes: Array.isArray(result.notes) ? result.notes : [],
-    createdAt: result.createdAt instanceof Date ? result.createdAt.toISOString() : new Date(result.createdAt).toISOString(),
-    updatedAt: result.updatedAt instanceof Date ? result.updatedAt.toISOString() : now.toISOString()
-  };
+  return toExpenseRecord({
+    ...result,
+    updatedAt: result.updatedAt ?? now
+  });
 }

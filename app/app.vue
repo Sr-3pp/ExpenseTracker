@@ -1,21 +1,42 @@
 <script setup lang="ts">
-const { isOpen } = useModal('uploadTicket');
+import type { ExpenseRecord } from '~~/shared/types/expense';
+
+const selectedExpense = ref<ExpenseRecord | null>(null);
+const { toggle: toggleEditModal } = useModal('editExpense');
+const { toggle: toggleDeleteModal } = useModal('deleteExpense');
+
+const handleUpdate = () => {
+  selectedExpense.value = null;
+};
+
+const handleEdit = (expense: ExpenseRecord) => {
+  selectedExpense.value = expense;
+  toggleEditModal();
+};
+
+const handleDelete = (expense: ExpenseRecord) => {
+  selectedExpense.value = expense;
+  toggleDeleteModal();
+};
 </script>
 
 <template>
   <UApp>
     <NuxtRouteAnnouncer />
-      <AppNavigation />
+    <AppNavigation />
+    
+    <UMain class="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6">
+      <ExpenseList @edit="handleEdit" @delete="handleDelete" />
+    </UMain>
+    <ModalUploadTicket />
 
-    <UModal
-      v-model:open="isOpen"
-      title="Upload Ticket"
-      description="upload the ticket picture to get the details"
-      name="uploadTicket"
-    >
-      <template #body>
-        <TicketWizard />
-      </template>
-    </UModal>
+    <ModalExpenseEdit
+      :expense="selectedExpense"
+      @saved="handleUpdate"
+    />
+    <ModalExpenseDelete
+      :expense="selectedExpense"
+      @deleted="handleUpdate"
+    />
   </UApp>
 </template>
