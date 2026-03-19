@@ -1,4 +1,4 @@
-import type { TicketExtraction } from '~~/shared/types/ticket';
+import type { TicketExtraction } from '~~/types/ticket';
 
 export type ExpenseRecord = TicketExtraction & {
   id: string;

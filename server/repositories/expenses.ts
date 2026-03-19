@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 
-import type { ExpenseRecord } from '~~/shared/types/expense';
-import type { TicketExtraction } from '~~/shared/types/ticket';
+import type { ExpenseRecord } from '~~/types/expense';
+import type { TicketExtraction } from '~~/types/ticket';
 
 import { getExpensesCollection } from '~~/server/utils/mongodb';
 

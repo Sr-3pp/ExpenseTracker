@@ -1,5 +1,5 @@
-import type { ExpenseRecord } from '~~/shared/types/expense';
-import type { TicketExtraction } from '~~/shared/types/ticket';
+import type { ExpenseRecord } from '~~/types/expense';
+import type { TicketExtraction } from '~~/types/ticket';
 
 export const useTicket = () => {
   const expenses = useState<ExpenseRecord[]>('expenses', () => []);

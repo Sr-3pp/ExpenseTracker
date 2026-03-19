@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PaymentMethodOption } from '~~/shared/constants/payment-methods';
-import type { TicketExtraction, TicketLineItem } from '~~/shared/types/ticket';
+import type { TicketExtraction, TicketLineItem } from '~~/types/ticket';
 import { paymentMethodOptions } from '~~/shared/constants/payment-methods';
 import { ticketExtractionSchema } from '~~/shared/schemas/ticket';
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui';
-import type { ExpenseRecord } from '~~/shared/types/expense';
+import type { ExpenseRecord } from '~~/types/expense';
 
 const emit = defineEmits<{
   edit: [expense: ExpenseRecord];

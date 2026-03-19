@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TicketExtraction } from '~~/shared/types/ticket';
+import type { TicketExtraction } from '~~/types/ticket';
 
 const ticketPicture = ref<File | null>(null);
 const extractedTicket = ref<TicketExtraction | null>(null);

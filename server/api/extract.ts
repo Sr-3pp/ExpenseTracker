@@ -5,7 +5,7 @@ import {
   type ResponseSchema
 } from '@google/generative-ai';
 import { paymentMethodOptions } from '~~/shared/constants/payment-methods';
-import type { TicketExtraction } from '~~/shared/types/ticket';
+import type { TicketExtraction } from '~~/types/ticket';
 
 import { ticketExtractionSchema } from '~~/server/utils/expense-schema';
 

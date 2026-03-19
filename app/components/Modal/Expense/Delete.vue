@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ExpenseRecord } from '~~/shared/types/expense';
+import type { ExpenseRecord } from '~~/types/expense';
 
 const props = defineProps<{
   expense: ExpenseRecord | null;
