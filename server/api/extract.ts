@@ -4,30 +4,11 @@ import {
   SchemaType,
   type ResponseSchema
 } from '@google/generative-ai';
+import type { ExpenseRecord } from '~~/shared/types/expense';
 import type { TicketExtraction } from '~~/shared/types/ticket';
 
-import { z } from 'zod';
-
-const ticketExtractionSchema = z.object({
-  merchant: z.string().nullable(),
-  purchaseDate: z.string().nullable(),
-  currency: z.string().nullable(),
-  total: z.number().nullable(),
-  subtotal: z.number().nullable(),
-  tax: z.number().nullable(),
-  tip: z.number().nullable(),
-  invoiceNumber: z.string().nullable(),
-  paymentMethod: z.string().nullable(),
-  items: z.array(
-    z.object({
-      name: z.string(),
-      quantity: z.number().nullable(),
-      unitPrice: z.number().nullable(),
-      totalPrice: z.number().nullable()
-    })
-  ),
-  notes: z.array(z.string())
-});
+import { saveExpense } from '~~/server/repositories/expenses';
+import { ticketExtractionSchema } from '~~/server/utils/expense-schema';
 
 const ticketSchema: ResponseSchema = {
   type: SchemaType.OBJECT,
@@ -203,8 +184,10 @@ Rules:
     }
 
     const parsed = JSON.parse(content) as TicketExtraction;
+    const validatedExpense = ticketExtractionSchema.parse(parsed);
+    const savedExpense: ExpenseRecord = await saveExpense(validatedExpense);
 
-    return ticketExtractionSchema.parse(parsed);
+    return savedExpense;
   } catch (error) {
     if (error instanceof GoogleGenerativeAIResponseError) {
       throw createError({

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { TicketExtraction } from '~~/shared/types/ticket';
+import type { ExpenseRecord } from '~~/shared/types/expense';
 
 const ticketPicture = ref<File | null>(null);
-const extractedTicket = ref<TicketExtraction | null>(null);
+const extractedTicket = ref<ExpenseRecord | null>(null);
 const errorMessage = ref('');
 const isLoading = ref(false);
 const { extractData } = useTicket();
