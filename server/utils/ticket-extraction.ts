@@ -6,10 +6,10 @@ import {
 } from '@google/generative-ai';
 import type { H3Event } from 'h3';
 
-import { paymentMethodOptions } from '~~/shared/constants/payment-methods';
-import type { TicketExtraction } from '~~/shared/types/ticket';
+import { paymentMethodOptions } from '../../shared/constants/payment-methods';
+import type { TicketExtraction } from '../../shared/types/ticket';
 
-import { ticketExtractionSchema } from '~~/server/utils/expense-schema';
+import { ticketExtractionSchema } from './expense-schema';
 
 const ticketResponseSchema: ResponseSchema = {
   type: SchemaType.OBJECT,

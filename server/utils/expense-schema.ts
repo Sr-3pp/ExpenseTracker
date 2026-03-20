@@ -1,1 +1,1 @@
-export { ticketExtractionSchema } from '~~/shared/schemas/ticket';
+export { ticketExtractionSchema } from '../../shared/schemas/ticket';

@@ -2,7 +2,15 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 
+const rootDir = fileURLToPath(new URL('.', import.meta.url))
+
 export default defineConfig({
+  resolve: {
+    alias: {
+      '~': rootDir,
+      '~~': rootDir,
+    },
+  },
   test: {
     projects: [
       {
@@ -21,7 +29,7 @@ export default defineConfig({
           setupFiles: ['test/setup/coverage.ts'],
           environmentOptions: {
             nuxt: {
-              rootDir: fileURLToPath(new URL('.', import.meta.url)),
+              rootDir,
               domEnvironment: 'happy-dom',
             },
           },

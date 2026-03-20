@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { normalizePaymentMethod, paymentMethodOptions } from '~~/shared/constants/payment-methods';
+import { normalizePaymentMethod, paymentMethodOptions } from '../constants/payment-methods';
 
 export const ticketLineItemSchema = z.object({
   name: z.string(),
