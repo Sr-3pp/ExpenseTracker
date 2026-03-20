@@ -59,6 +59,16 @@ const openEdit = (expense: ExpenseRecord) => {
 const openDelete = (expense: ExpenseRecord) => {
   emit('delete', expense);
 };
+
+const createdAtFormatter = new Intl.DateTimeFormat('en-US', {
+  dateStyle: 'short',
+  timeStyle: 'medium',
+  timeZone: 'UTC'
+});
+
+const formatCreatedAt = (value: string) => {
+  return createdAtFormatter.format(new Date(value));
+};
 </script>
 
 <template>
@@ -95,7 +105,7 @@ const openDelete = (expense: ExpenseRecord) => {
       </template>
 
       <template #createdAt-cell="{ row }">
-        {{ new Date(row.original.createdAt).toLocaleString() }}
+        {{ formatCreatedAt(row.original.createdAt) }}
       </template>
 
       <template #actions-cell="{ row }">
